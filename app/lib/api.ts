@@ -4,7 +4,12 @@ import type { AxiosResponse } from 'axios';
 import type { Note, NewNoteData } from '@/app/types/note';
 
 const BASE_URL = 'https://notehub-public.goit.study/api';
-const TOKEN = process.env.NEXT_PUBLIC_NOTEHUB_TOKEN;
+const TOKEN = process.env.NOTEHUB_TOKEN;
+
+if (!TOKEN) {
+  throw new Error('API token is missing. Set NOTEHUB_TOKEN in environment variables.');
+}
+
 
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
