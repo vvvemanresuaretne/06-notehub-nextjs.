@@ -2,7 +2,7 @@
 
 import { useParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
-import { getSingleNote } from '@/lib/api';
+import { getSingleNote } from '@/app/lib/api';
 
 export default function NoteDetailsClient() {
   const { id } = useParams<{ id: string }>();
