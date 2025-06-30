@@ -6,9 +6,7 @@ import type { Note, NewNoteData } from '@/app/types/note';
 const BASE_URL = 'https://notehub-public.goit.study/api';
 const TOKEN = process.env.NEXT_PUBLIC_NOTEHUB_TOKEN;
 
-if (!TOKEN || typeof TOKEN !== 'string' || TOKEN.trim() === '') {
-  throw new Error('NOTEHUB_TOKEN is missing or invalid. Set it in environment variables.');
-}
+
 
 
 
