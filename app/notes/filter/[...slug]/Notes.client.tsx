@@ -1,4 +1,3 @@
-
 "use client";
 import { fetchNotes, FetchNotesProps } from "@/lib/api";
 import css from "./NotesPage.module.css";
@@ -28,7 +27,7 @@ export default function NotesClient({
 
   const { data } = useQuery({
     queryKey: ["notes", debounceQuery, currentPage, initialTag],
-    queryFn: () => fetchNotes(searchText, currentPage, initialTag),
+    queryFn: () => fetchNotes(debounceQuery, currentPage, initialTag),
     placeholderData: keepPreviousData,
     initialData,
   });
