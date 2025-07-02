@@ -1,18 +1,16 @@
 "use client";
-import { useQuery } from "@tanstack/react-query";
-import css from "./NoteDetails.module.css";
 import { fetchNoteById } from "@/lib/api";
-import { useParams, useRouter } from "next/navigation";
-import Loader from "@/components/Loader/Loader";
-import ErrorText from "@/components/Error/ErrorText";
+import css from "./NotePreview.module.css";
+import { useQuery } from "@tanstack/react-query";
+import Loader from "../Loader/Loader";
+import ErrorText from "../Error/ErrorText";
 
-export default function NoteDetailsClient() {
-  const { id } = useParams();
+type NotePreviewProps = {
+  id: number;
+  onClose: () => void;
+};
 
-  const router = useRouter();
-
-  const back = () => router.back();
-
+export default function NotePreview({ id, onClose }: NotePreviewProps) {
   const {
     data: note,
     isLoading,
@@ -32,7 +30,7 @@ export default function NoteDetailsClient() {
           <div className={css.item}>
             <div className={css.header}>
               <h2>{note?.title}</h2>
-              <button className={css.backBtn} onClick={back}>
+              <button className={css.backBtn} onClick={onClose}>
                 Go back
               </button>
             </div>

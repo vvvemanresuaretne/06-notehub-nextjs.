@@ -1,23 +1,16 @@
-import type { Metadata } from 'next';
-import React from 'react';
-import './globals.css';
+import css from "./page.module.css";
 
-
-export const metadata: Metadata = {
-  title: 'Home',
-};
-
-const Home = () => {
+export default function Home() {
   return (
-    <main>
-      <div className="container">
-        <h1 className="title">Welcome to NoteHub</h1>
-        <p className="description">
+    <main className={css.main}>
+      <div className={css.container}>
+        <h1 className={css.title}>Welcome to NoteHub</h1>
+        <p className={css.description}>
           NoteHub is a simple and efficient application designed for managing
           personal notes. It helps keep your thoughts organized and accessible
-          in one place, whether you&apos;re at home or on the go.
+          in one place, whether you&#39;re at home or on the go.
         </p>
-        <p className="description">
+        <p className={css.description}>
           The app provides a clean interface for writing, editing, and browsing
           notes. With support for keyword search and structured organization,
           NoteHub offers a streamlined experience for anyone who values clarity
@@ -26,6 +19,4 @@ const Home = () => {
       </div>
     </main>
   );
-};
-
-export default Home;
+}

@@ -1,16 +1,12 @@
-'use client';
+"use client";
+import css from "../../../components/Error/ErrorText.module.css";
 
-interface ErrorProps {
+type ErrorProps = {
   error: Error;
-  reset: () => void;
-}
+};
 
-export default function Error({ error, reset }: ErrorProps) {
+export default function Error({ error }: ErrorProps) {
   return (
-    <div>
-      <h2>Something went wrong:</h2>
-      <p>{error.message}</p>
-      <button onClick={reset}>Try again</button>
-    </div>
+    <p className={css.text}>Could not fetch note details. {error.message}</p>
   );
 }
