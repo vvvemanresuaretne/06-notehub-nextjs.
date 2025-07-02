@@ -1,7 +1,8 @@
 "use client";
+
 import { fetchNoteById } from "@/lib/api";
-import css from "./NotePreview.module.css";
 import { useQuery } from "@tanstack/react-query";
+import css from "./NotePreview.module.css";
 import Loader from "../Loader/Loader";
 import ErrorText from "../Error/ErrorText";
 
@@ -17,28 +18,28 @@ export default function NotePreview({ id, onClose }: NotePreviewProps) {
     isError,
   } = useQuery({
     queryKey: ["note", id],
-    queryFn: () => fetchNoteById(Number(id)),
+    queryFn: () => fetchNoteById(id),
+    enabled: !isNaN(id),
     refetchOnMount: false,
   });
 
+  if (isLoading) return <Loader />;
+  if (isError) return <ErrorText message="Something went wrong." />;
+
+  if (!note) return <ErrorText message="Note not found." />;
+
   return (
-    <>
-      {isLoading && <Loader />}
-      {isError && <ErrorText message="Something went wrong." />}
-      {note && (
-        <div className={css.container}>
-          <div className={css.item}>
-            <div className={css.header}>
-              <h2>{note?.title}</h2>
-              <button className={css.backBtn} onClick={onClose}>
-                Go back
-              </button>
-            </div>
-            <p className={css.content}>{note?.content}</p>
-            <p className={css.date}>{note?.createdAt}</p>
-          </div>
+    <div className={css.container}>
+      <div className={css.item}>
+        <div className={css.header}>
+          <h2>{note.title}</h2>
+          <button className={css.backBtn} onClick={onClose}>
+            Go back
+          </button>
         </div>
-      )}
-    </>
+        <p className={css.content}>{note.content}</p>
+        <p className={css.date}>{note.createdAt}</p>
+      </div>
+    </div>
   );
 }
