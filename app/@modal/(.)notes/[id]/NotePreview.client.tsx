@@ -6,8 +6,9 @@ import NotePreview from "@/components/NotePreview/NotePreview";
 import { useParams, useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { fetchNoteById } from "@/lib/api";
+import { Note } from "@/types/note"; 
 
-export default function PreviewClient(): React.JSX.Element {
+export default function PreviewClient() {
   const { id } = useParams();
   const router = useRouter();
 
@@ -15,7 +16,7 @@ export default function PreviewClient(): React.JSX.Element {
 
   const noteId = Number(id);
 
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError } = useQuery<Note>({
     queryKey: ["note", noteId],
     queryFn: () => fetchNoteById(noteId),
     enabled: !isNaN(noteId),
@@ -29,4 +30,3 @@ export default function PreviewClient(): React.JSX.Element {
     </Modal>
   );
 }
-
