@@ -1,19 +1,20 @@
-import React from 'react';
+import css from "./Footer.module.css";
 
-const Footer = () => {
+export default function Footer() {
   return (
-    <footer className="footer">
-      <div className="content">
-        <p>© {new Date().getFullYear()} NoteHub. All rights reserved.</p>
-        <div className="wrap">
-          <p>Developer: Vasylkovskyi Vladyslav</p>
+    <footer className={css.footer}>
+      <div className={css.content}>
+        <p>&copy; {new Date().getFullYear()} NoteHub. All rights reserved.</p>
+        <div className={css.wrap}>
+          <p>Developer: Vladyslav Vasylkovskyi</p>
           <p>
-            Contact us: <a href="mailto:student@notehub.app">student@notehub.app</a>
+            Contact us:
+            <a href="mailto:vvvasilkovskyi@gmail.com">
+              vvvasilkovskyi@gmail.com
+            </a>
           </p>
         </div>
       </div>
     </footer>
   );
-};
-
-export default Footer;
+}

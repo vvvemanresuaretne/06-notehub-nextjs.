@@ -1,13 +1,15 @@
+
 "use client";
 
 import React, { useId, useState } from "react";
 import css from "./NoteForm.module.css";
 import * as Yup from "yup";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createNote } from "@/lib/api";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { useNoteDraft } from "@/lib/store/noteStore";
+import { createNote } from "@/lib/api/clientApi";
+
 
 const FormSchema = Yup.object({
   title: Yup.string()

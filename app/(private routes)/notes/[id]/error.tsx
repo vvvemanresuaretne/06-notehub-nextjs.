@@ -1,5 +1,5 @@
 "use client";
-import css from "../../../components/Error/ErrorText.module.css";
+import css from "../../../../components/Error/ErrorText.module.css";
 
 type ErrorProps = {
   error: Error;

@@ -1,3 +1,4 @@
+
 import css from "./Loader.module.css";
 
 interface LoaderProps {

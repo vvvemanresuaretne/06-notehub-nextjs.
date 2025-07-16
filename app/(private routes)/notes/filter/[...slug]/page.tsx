@@ -1,7 +1,7 @@
-
-import { fetchNotes } from "@/lib/api";
-import NotesClient from "./Notes.client";
 import { Metadata } from "next";
+import NotesClient from "./Notes.client";
+import { fetchNotesServer } from "@/lib/api/serverApi";
+
 
 type NotesProps = {
   params: Promise<{ slug: string[] }>;
@@ -53,7 +53,7 @@ export default async function Notes({ params }: NotesProps) {
 
   const category = slug[0] === "All" ? undefined : slug[0];
 
-  const initialData = await fetchNotes("", 1, category);
+  const initialData = await fetchNotesServer("", 1, category);
 
   return <NotesClient initialData={initialData} initialTag={category} />;
 }

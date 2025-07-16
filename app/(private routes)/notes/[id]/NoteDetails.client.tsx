@@ -1,14 +1,13 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
 import css from "./NoteDetails.module.css";
-import { fetchNoteById } from "@/lib/api";
 import { useParams, useRouter } from "next/navigation";
 import Loader from "@/components/Loader/Loader";
 import ErrorText from "@/components/Error/ErrorText";
+import { fetchNoteById } from "@/lib/api/clientApi";
 
 export default function NoteDetailsClient() {
-  const { id } = useParams();
-
+  const { id } = useParams<{id: string}>();
   const router = useRouter();
 
   const back = () => router.back();
@@ -19,9 +18,15 @@ export default function NoteDetailsClient() {
     isError,
   } = useQuery({
     queryKey: ["note", id],
-    queryFn: () => fetchNoteById(Number(id)),
+    queryFn: () => fetchNoteById(id),
     refetchOnMount: false,
   });
+
+  console.log(note);
+
+  const formattedDate = note?.createdAt
+    ? new Date(note?.createdAt).toUTCString()
+    : "";
 
   return (
     <>
@@ -37,7 +42,7 @@ export default function NoteDetailsClient() {
               </button>
             </div>
             <p className={css.content}>{note?.content}</p>
-            <p className={css.date}>{note?.createdAt}</p>
+            <p className={css.date}>{formattedDate}</p>
           </div>
         </div>
       )}
