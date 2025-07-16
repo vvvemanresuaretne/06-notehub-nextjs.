@@ -1,5 +1,5 @@
 import { fetchServerUser } from "@/lib/api/serverApi";
-import css from "./ProfilePage.module.css";
+import css from "./ ProfilePage.module.css";
 import Link from "next/link";
 import Image from "next/image";
 import { Metadata } from "next";
