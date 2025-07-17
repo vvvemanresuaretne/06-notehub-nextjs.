@@ -4,7 +4,7 @@ import css from "./NoteDetails.module.css";
 import { useParams, useRouter } from "next/navigation";
 import Loader from "@/components/Loader/Loader";
 import ErrorText from "@/components/Error/ErrorText";
-import { fetchNoteById } from "@/lib/api/clientApi";
+import { fetchNoteById } from "@/lib/api/api";
 
 export default function NoteDetailsClient() {
   const { id } = useParams<{id: string}>();
