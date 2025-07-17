@@ -1,15 +1,8 @@
-import axios from "axios";
+
 import { FetchNotesProps, NewNote, Note } from "@/types/note";
 import { NewUser, UpdateUserProps, User, UserRes } from "@/types/user";
-
+import { nextServer } from "./api";
 import { CheckSessionResp } from "@/types/session";
-
-
-const baseURL = process.env.NEXT_PUBLIC_API_URL + "/api";
-export const nextServer = axios.create({
-  baseURL,
-  withCredentials: true,
-});
 
 export async function fetchNotes(
   search: string,
