@@ -5,7 +5,7 @@ import css from "./NotePreview.module.css";
 import { useQuery } from "@tanstack/react-query";
 import Loader from "../Loader/Loader";
 import ErrorText from "../Error/ErrorText";
-import { fetchNoteById } from "@/lib/api/api";
+import { fetchNoteById } from "@/lib/api/clientApi";
 
 type NotePreviewProps = {
   id: string;
