@@ -1,9 +1,15 @@
-
+import axios from "axios";
 import { cookies } from "next/headers";
-import { nextServer } from "./api";
+
 import { FetchNotesProps, Note } from "@/types/note";
 import { CheckSessionResp } from "@/types/session";
 import { UserRes } from "@/types/user";
+
+const baseURL = process.env.NEXT_PUBLIC_API_URL + "/api";
+export const nextServer = axios.create({
+  baseURL,
+  withCredentials: true,
+});
 
 export async function fetchNotesServer(
   search: string,
