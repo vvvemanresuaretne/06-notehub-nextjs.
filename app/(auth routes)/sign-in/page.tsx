@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import css from "./SignInPage.module.css";
 import { NewUser } from "@/types/user";
 import { useRouter } from "next/navigation";
-import { login } from "@/lib/api/clientApi";
+import { login } from "@/lib/api/api";
 import { useAuth } from "@/lib/store/authStore";
 import toast from "react-hot-toast";
 
