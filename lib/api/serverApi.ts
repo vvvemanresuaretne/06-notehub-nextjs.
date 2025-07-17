@@ -40,12 +40,12 @@ export async function fetchNoteByIdServer(id: string): Promise<Note> {
 
 export async function checkServerSession() {
   const cookieStore = await cookies();
-  const res = await nextServer.get<CheckSessionResp>("/auth/session", {
+  const response = await nextServer.get<CheckSessionResp>("/auth/session", {
     headers: {
       Cookie: cookieStore.toString(),
     },
   });
-  return res;
+  return response;
 }
 
 export async function fetchServerUser(): Promise<UserRes> {
