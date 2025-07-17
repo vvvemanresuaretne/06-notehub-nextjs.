@@ -8,7 +8,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { useNoteDraft } from "@/lib/store/noteStore";
-import { createNote } from "@/lib/api/clientApi";
+import { createNote } from "@/lib/api/api";
 
 
 const FormSchema = Yup.object({
