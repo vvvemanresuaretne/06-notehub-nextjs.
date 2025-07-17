@@ -1,4 +1,3 @@
-
 "use client";
 
 import { checkSession, fetchUser } from "@/lib/api/clientApi";
@@ -18,18 +17,24 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     const fetchSession = async () => {
       try {
         const isAuthenticated = await checkSession();
+
         if (isAuthenticated) {
           const user = await fetchUser();
           setUser(user);
+        } else {
+          clearIsAuthenticated();
         }
-      } catch  {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (error) {
         clearIsAuthenticated();
-        toast("Please log in or sign up to continue.");
+        toast.error("Please log in or sign up to continue.");
       }
     };
+
     fetchSession();
   }, [setUser, clearIsAuthenticated]);
-  return children;
+
+  return <>{children}</>; // ✅ потрібно обгортати в Fragment
 };
 
 export default AuthProvider;

@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { checkServerSession } from './lib/api/serverApi'
+import { checkServerSession } from './lib/api/serverApi' 
 import { parse } from 'cookie'
 
-const privateRoutes = ['/profile']
+const privateRoutes = ['/profile', '/notes']
+const publicRoutes = ['/sign-in', '/sign-up']
 
 export const middleware = async (request: NextRequest) => {
   const { pathname } = request.nextUrl
@@ -11,19 +12,25 @@ export const middleware = async (request: NextRequest) => {
   const refreshToken = request.cookies.get('refreshToken')?.value
 
   const isPrivateRoute = privateRoutes.some(route => pathname.startsWith(route))
+  const isPublicRoute = publicRoutes.includes(pathname)
+
+  if (isPublicRoute && accessToken) {
+    return NextResponse.redirect(new URL('/profile', request.url))
+  }
+
 
   if (isPrivateRoute && !accessToken) {
     if (refreshToken) {
       try {
-        const response = await checkServerSession()
-
+        const response = await checkServerSession() 
         const setCookie = response.headers['set-cookie']
+
         if (setCookie) {
           const cookieArray = Array.isArray(setCookie) ? setCookie : [setCookie]
           const newResponse = NextResponse.next()
 
-          for (const newCookieStr of cookieArray) {
-            const parsed = parse(newCookieStr)
+          for (const cookieStr of cookieArray) {
+            const parsed = parse(cookieStr)
 
             if (parsed.accessToken) {
               newResponse.cookies.set('accessToken', parsed.accessToken, {
@@ -60,5 +67,10 @@ export const middleware = async (request: NextRequest) => {
 }
 
 export const config = {
-  matcher: ['/profile/:path*'], 
+  matcher: [
+    '/profile/:path*',
+    '/notes/:path*',
+    '/sign-in',
+    '/sign-up',
+  ],
 }
