@@ -3,14 +3,16 @@ import { FetchNotesProps, NewNote, Note } from "@/types/note";
 import { NewUser, UpdateUserProps, User, UserRes } from "@/types/user";
 
 import { CheckSessionResp } from "@/types/session";
-const baseURL = process.env.NEXT_PUBLIC_API_URL + "/api";
+
+
+
+const API_HOST = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+const baseURL = `${API_HOST}/api`;
 
 export const nextServer = axios.create({
   baseURL,
   withCredentials: true,
 });
-
-
 
 
 export async function fetchNotes(
