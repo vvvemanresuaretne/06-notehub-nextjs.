@@ -3,7 +3,7 @@
 import { useAuth } from "@/lib/store/authStore";
 import css from "./EditProfilePage.module.css";
 import Image from "next/image";
-import { updateUser } from "@/lib/api/api";
+import { updateUser } from "@/lib/api/clientApi";
 import { UpdateUserProps } from "@/types/user";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";

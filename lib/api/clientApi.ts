@@ -1,4 +1,3 @@
-
 import { FetchNotesProps, NewNote, Note } from "@/types/note";
 import { NewUser, UpdateUserProps, User, UserRes } from "@/types/user";
 import { nextServer } from "./api";

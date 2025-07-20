@@ -1,4 +1,3 @@
-
 "use client";
 import Modal from "@/components/Modal/Modal";
 import NotePreview from "@/components/NotePreview/NotePreview";

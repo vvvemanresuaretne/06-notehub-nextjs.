@@ -5,8 +5,8 @@ import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer/Footer";
 import TanStackProvider from "@/components/TanStackProvider/TanStackProvider";
 import { Toaster } from "react-hot-toast";
-import 'modern-normalize';
-import AuthProvider from "@/components/AuthProvider/AuthProvider"; // 👈 додано
+import "modern-normalize";
+import AuthProvider from "@/components/AuthProvider/AuthProvider";
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -52,15 +52,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={roboto.variable}>
+      <body className={`${roboto.variable}`}>
         <TanStackProvider>
-          <AuthProvider> {/* ✅ обгорнуто */}
+          <AuthProvider>
             <Header />
             <main>{children}</main>
             {modal}
             <Footer />
-            <Toaster position="top-center" reverseOrder={false} />
           </AuthProvider>
+          <Toaster position="top-center" reverseOrder={false} />
         </TanStackProvider>
       </body>
     </html>

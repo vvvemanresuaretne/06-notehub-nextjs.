@@ -17,24 +17,18 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     const fetchSession = async () => {
       try {
         const isAuthenticated = await checkSession();
-
         if (isAuthenticated) {
           const user = await fetchUser();
           setUser(user);
-        } else {
-          clearIsAuthenticated();
         }
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      } catch (error) {
+      } catch  {
         clearIsAuthenticated();
-        toast.error("Please log in or sign up to continue.");
+        toast("Please log in or sign up to continue.");
       }
     };
-
     fetchSession();
   }, [setUser, clearIsAuthenticated]);
-
-  return <>{children}</>; // ✅ потрібно обгортати в Fragment
+  return children;
 };
 
 export default AuthProvider;

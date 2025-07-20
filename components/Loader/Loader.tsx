@@ -1,4 +1,3 @@
-
 import css from "./Loader.module.css";
 
 interface LoaderProps {
@@ -57,3 +56,4 @@ export default function Loader({
     </div>
   );
 }
+

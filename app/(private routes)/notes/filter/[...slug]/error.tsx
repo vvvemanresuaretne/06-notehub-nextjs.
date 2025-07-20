@@ -1,4 +1,3 @@
-
 'use client';
 import css from "../../../../../components/Error/ErrorText.module.css";
 

@@ -1,4 +1,3 @@
-
 "use client";
 
 import css from "./NotePreview.module.css";
