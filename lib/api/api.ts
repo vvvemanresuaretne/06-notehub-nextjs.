@@ -1,17 +1,20 @@
 import axios from "axios";
 import { FetchNotesProps, NewNote, Note } from "@/types/note";
 import { NewUser, UpdateUserProps, User, UserRes } from "@/types/user";
-
 import { CheckSessionResp } from "@/types/session";
-const baseURL = process.env.NEXT_PUBLIC_API_URL + "/api";
+
+// Явная проверка переменной окружения
+const envBaseUrl = process.env.NEXT_PUBLIC_API_URL;
+if (!envBaseUrl) {
+  throw new Error("NEXT_PUBLIC_API_URL is not defined in your environment");
+}
+
+const baseURL = `${envBaseUrl}/api`;
 
 export const nextServer = axios.create({
   baseURL,
   withCredentials: true,
 });
-
-
-
 
 export async function fetchNotes(
   search: string,
@@ -26,7 +29,6 @@ export async function fetchNotes(
       ...(tag && { tag }),
     },
   });
-
   return res.data;
 }
 
