@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { checkServerSession } from './lib/api/serverApi'
 import { parse } from 'cookie'
 
 const privateRoutes = ['/profile', '/notes']
@@ -16,35 +15,40 @@ export const middleware = async (request: NextRequest) => {
     return NextResponse.redirect(new URL('/', request.url))
   }
 
-  if (isPrivateRoute && !accessToken) {
-    if (refreshToken) {
-      try {
-        const sessionRes = await checkServerSession()
-        const setCookie = sessionRes.headers['set-cookie']
+  if (isPrivateRoute && !accessToken && refreshToken) {
+    try {
+      const apiRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/session`, {
+        method: 'GET',
+        headers: {
+          Cookie: `refreshToken=${refreshToken}`
+        },
+        credentials: 'include',
+      })
+
+      if (apiRes.ok) {
+        const setCookie = apiRes.headers.get('set-cookie')
+        const response = NextResponse.next()
+
         if (setCookie) {
-          const cookieArray = Array.isArray(setCookie) ? setCookie : [setCookie]
-          const response = NextResponse.next()
-          for (const c of cookieArray) {
-            const p = parse(c)
-            if (p.accessToken) {
-              response.cookies.set('accessToken', p.accessToken, {
-                httpOnly: true, secure: true, path: '/', 
-                maxAge: Number(p['Max-Age']), expires: p.Expires ? new Date(p.Expires) : undefined
-              })
-            }
-            if (p.refreshToken) {
-              response.cookies.set('refreshToken', p.refreshToken, {
-                httpOnly: true, secure: true, path: '/',
-                maxAge: Number(p['Max-Age']), expires: p.Expires ? new Date(p.Expires) : undefined
-              })
-            }
+          const parsedCookies = parse(setCookie)
+          if (parsedCookies.accessToken) {
+            response.cookies.set('accessToken', parsedCookies.accessToken, {
+              httpOnly: true, secure: true, path: '/', maxAge: 60 * 60
+            })
           }
-          return response
+          if (parsedCookies.refreshToken) {
+            response.cookies.set('refreshToken', parsedCookies.refreshToken, {
+              httpOnly: true, secure: true, path: '/', maxAge: 7 * 24 * 60 * 60
+            })
+          }
         }
-      } catch {
-        return NextResponse.redirect(new URL('/sign-in', request.url))
+
+        return response
       }
+    } catch {
+      return NextResponse.redirect(new URL('/sign-in', request.url))
     }
+
     return NextResponse.redirect(new URL('/sign-in', request.url))
   }
 
