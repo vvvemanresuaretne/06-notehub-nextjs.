@@ -12,7 +12,7 @@ const SingUp = () => {
   const router = useRouter();
   const [errorMessage, setErrorMessage] = useState("");
 
-  const seUser = useAuth((state) => state.setUser);
+  const setUser = useAuth((state) => state.setUser);
 
   const handleSubmit = async (formData: FormData) => {
     try {
@@ -21,7 +21,7 @@ const SingUp = () => {
 
       if (res) {
         toast.success("Registration was successful!");
-        seUser(res);
+        setUser(res);
         router.push("/profile");
       }
     } catch {
