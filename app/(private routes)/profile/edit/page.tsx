@@ -20,7 +20,8 @@ const Edit = () => {
     try {
       const value = Object.fromEntries(formData) as UpdateUserProps;
       const updatedUser = await updateUser(value);
-      setUser(updatedUser);
+      setUser(updatedUser.user);
+;
       toast.success("Your changes have been saved.");
       redirect();
     } catch {
