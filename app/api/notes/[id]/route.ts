@@ -4,12 +4,21 @@ import { api } from "../../api";
 import { isAxiosError } from "axios";
 import { logErrorResponse } from "../../../utils/logErrorResponse";
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  const cookieStore = cookies(); // `await` не потрібен
-  const { id } = params;
+// Утиліта для отримання ID з URL
+function extractIdFromUrl(request: NextRequest): string | null {
+  const url = new URL(request.url);
+  const segments = url.pathname.split("/");
+  return segments.pop() || null;
+}
+
+// GET /api/notes/[id]
+export async function GET(request: NextRequest) {
+  const cookieStore = cookies();
+  const id = extractIdFromUrl(request);
+
+  if (!id) {
+    return NextResponse.json({ error: "ID is required" }, { status: 400 });
+  }
 
   try {
     const { data } = await api.get(`/notes/${id}`, {
@@ -31,12 +40,14 @@ export async function GET(
   }
 }
 
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+// DELETE /api/notes/[id]
+export async function DELETE(request: NextRequest) {
   const cookieStore = cookies();
-  const { id } = params;
+  const id = extractIdFromUrl(request);
+
+  if (!id) {
+    return NextResponse.json({ error: "ID is required" }, { status: 400 });
+  }
 
   try {
     await api.delete(`/notes/${id}`, {
@@ -61,12 +72,15 @@ export async function DELETE(
   }
 }
 
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+// PATCH /api/notes/[id]
+export async function PATCH(request: NextRequest) {
   const cookieStore = cookies();
-  const { id } = params;
+  const id = extractIdFromUrl(request);
+
+  if (!id) {
+    return NextResponse.json({ error: "ID is required" }, { status: 400 });
+  }
+
   const body = await request.json();
 
   try {
