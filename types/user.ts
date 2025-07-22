@@ -1,6 +1,7 @@
 export interface User {
   username: string;
   email: string;
+  avatar: string;
 }
 
 export type NewUser = {
@@ -8,12 +9,14 @@ export type NewUser = {
   password: string;
 };
 
+
 export type UserRes = {
-  username: string;
-  email: string;
-  avatar: string;
+  user: User;
+  token: string;
 };
 
 export type UpdateUserProps = {
-  username: string;
+  name?: string;
+  email?: string;
+  password?: string;
 };
