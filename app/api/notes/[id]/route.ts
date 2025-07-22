@@ -4,12 +4,11 @@ import { api } from "../../api";
 import { isAxiosError } from "axios";
 import { logErrorResponse } from "../../../utils/logErrorResponse";
 
-type Props = {
-  params: { id: string };
-};
-
-export async function GET(request: NextRequest, { params }: Props) {
-  const cookieStore = await cookies();
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const cookieStore = cookies(); // `await` не потрібен
   const { id } = params;
 
   try {
@@ -32,8 +31,11 @@ export async function GET(request: NextRequest, { params }: Props) {
   }
 }
 
-export async function DELETE(request: NextRequest, { params }: Props) {
-  const cookieStore = await cookies();
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const cookieStore = cookies();
   const { id } = params;
 
   try {
@@ -59,8 +61,11 @@ export async function DELETE(request: NextRequest, { params }: Props) {
   }
 }
 
-export async function PATCH(request: NextRequest, { params }: Props) {
-  const cookieStore = await cookies();
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const cookieStore = cookies();
   const { id } = params;
   const body = await request.json();
 
