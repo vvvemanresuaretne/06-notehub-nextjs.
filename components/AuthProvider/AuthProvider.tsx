@@ -19,7 +19,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         const isAuthenticated = await checkSession();
         if (isAuthenticated) {
           const user = await fetchUser();
-          setUser(user);
+          setUser(user.user);
         }
       } catch  {
         clearIsAuthenticated();
