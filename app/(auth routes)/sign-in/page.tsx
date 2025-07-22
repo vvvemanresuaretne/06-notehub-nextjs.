@@ -19,7 +19,7 @@ const SignIn = () => {
       const res = await login(formValues);
       if (res) {
         toast.success("Login successful!");
-        setUser(res);
+        setUser(res.user);
         router.push("/profile");
       }
     } catch {
