@@ -3,15 +3,9 @@ import { api } from "@/app/api/api";
 import { isAxiosError } from "axios";
 import { logErrorResponse } from "@/app/util/logErrorResponse";
 
-interface Params {
-  params: {
-    id: string;
-  };
-}
-
 export async function GET(
   request: NextRequest,
-  { params }: Params
+  { params }: { params: { id: string } }
 ) {
   const { id } = params;
 
@@ -44,7 +38,7 @@ export async function GET(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: Params
+  { params }: { params: { id: string } }
 ) {
   const { id } = params;
 
@@ -77,7 +71,7 @@ export async function DELETE(
 
 export async function PATCH(
   request: NextRequest,
-  { params }: Params
+  { params }: { params: { id: string } }
 ) {
   const { id } = params;
 
