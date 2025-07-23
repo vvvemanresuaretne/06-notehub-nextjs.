@@ -1,5 +1,5 @@
 import { FetchNotesProps, NewNote, Note } from "@/types/note";
-import { NewUser, UpdateUserProps, User, UserRes } from "@/types/user";
+import { NewUser, User, UpdateUserProps  } from "@/types/user";
 import { nextServer } from "./api";
 import { CheckSessionResp } from "@/types/session";
 
@@ -40,8 +40,8 @@ export async function register(newUser: NewUser): Promise<User> {
   return res.data;
 }
 
-export async function login(newUser: NewUser): Promise<UserRes> {
-  const res = await nextServer.post<UserRes>("/auth/login", newUser);
+export async function login(newUser: NewUser): Promise<User> {
+  const res = await nextServer.post<User>("/auth/login", newUser);
   return res.data;
 }
 
@@ -50,8 +50,8 @@ export async function checkSession(): Promise<CheckSessionResp> {
   return res.data;
 }
 
-export async function fetchUser(): Promise<UserRes> {
-  const res = await nextServer.get<UserRes>("/users/me");
+export async function fetchUser(): Promise<User> {
+  const res = await nextServer.get<User>("/users/me");
   return res.data;
 }
 
@@ -59,7 +59,7 @@ export async function logOut(): Promise<void> {
   await nextServer.post("/auth/logout");
 }
 
-export async function updateUser(value: UpdateUserProps): Promise<UserRes> {
-  const res = await nextServer.patch<UserRes>("/users/me", value);
+export async function updateUser(value: UpdateUserProps): Promise<User> {
+  const res = await nextServer.patch<User>("/users/me", value);
   return res.data;
 }

@@ -1,13 +1,13 @@
 export const dynamic = "force-dynamic";
 
 import { NextResponse } from "next/server";
-import { api } from "../../api";
+import { api } from "@/app/api/api";
 import { cookies } from "next/headers";
 import { isAxiosError } from "axios";
-import { logErrorResponse } from "../../../utils/logErrorResponse";
+import { logErrorResponse } from "@/app/util/logErrorResponse";
 
 export async function GET() {
-  const cookieStore = await cookies();
+  const cookieStore = cookies();
 
   try {
     const { data } = await api.get("/users/me", {
@@ -17,20 +17,20 @@ export async function GET() {
     });
 
     return NextResponse.json(data, { status: 200 });
-  } catch (error: unknown) {
+  } catch (error) {
     if (isAxiosError(error)) {
       logErrorResponse(error);
       const status = error.response?.status || 401;
-      const message = error.response?.data || { error: "Unauthorized" };
+      const message = error.response?.data || { message: "Unauthorized" };
       return NextResponse.json(message, { status });
     }
 
-    return NextResponse.json({ error: "Unexpected error" }, { status: 500 });
+    return NextResponse.json({ message: "Unexpected error" }, { status: 500 });
   }
 }
 
 export async function PATCH(request: Request) {
-  const cookieStore = await cookies();
+  const cookieStore = cookies();
 
   try {
     const body = await request.json();
@@ -43,14 +43,14 @@ export async function PATCH(request: Request) {
     });
 
     return NextResponse.json(data, { status: 200 });
-  } catch (error: unknown) {
+  } catch (error) {
     if (isAxiosError(error)) {
       logErrorResponse(error);
       const status = error.response?.status || 500;
-      const message = error.response?.data || { error: "Failed to update user" };
+      const message = error.response?.data || { message: "Failed to update user" };
       return NextResponse.json(message, { status });
     }
 
-    return NextResponse.json({ error: "Unexpected error" }, { status: 500 });
+    return NextResponse.json({ message: "Unexpected error" }, { status: 500 });
   }
 }

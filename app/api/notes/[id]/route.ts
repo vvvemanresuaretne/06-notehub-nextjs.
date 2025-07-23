@@ -1,20 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
-import { cookies } from "next/headers";
-import { api } from "../../api";
+import { api } from "@/app/api/api";
 import { isAxiosError } from "axios";
-import { logErrorResponse } from "../../../utils/logErrorResponse";
+import { logErrorResponse } from "@/app/util/logErrorResponse";
 
-// Утиліта для отримання ID з URL
-function extractIdFromUrl(request: NextRequest): string | null {
-  const url = new URL(request.url);
-  const segments = url.pathname.split("/");
-  return segments.pop() || null;
+interface Params {
+  params: {
+    id: string;
+  };
 }
 
-// GET /api/notes/[id]
-export async function GET(request: NextRequest) {
-  const cookieStore = cookies();
-  const id = extractIdFromUrl(request);
+export async function GET(
+  request: NextRequest,
+  { params }: Params
+) {
+  const { id } = params;
 
   if (!id) {
     return NextResponse.json({ error: "ID is required" }, { status: 400 });
@@ -23,7 +22,7 @@ export async function GET(request: NextRequest) {
   try {
     const { data } = await api.get(`/notes/${id}`, {
       headers: {
-        Cookie: cookieStore.toString(),
+        Cookie: request.headers.get("cookie") || "",
       },
     });
 
@@ -32,7 +31,10 @@ export async function GET(request: NextRequest) {
     if (isAxiosError(error)) {
       logErrorResponse(error);
       const status = error.response?.status || 500;
-      const message = error.response?.data || { error: "Failed to fetch note" };
+      const message =
+        typeof error.response?.data === "string"
+          ? { error: error.response.data }
+          : error.response?.data || { error: "Failed to fetch note" };
       return NextResponse.json(message, { status });
     }
 
@@ -40,10 +42,11 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// DELETE /api/notes/[id]
-export async function DELETE(request: NextRequest) {
-  const cookieStore = cookies();
-  const id = extractIdFromUrl(request);
+export async function DELETE(
+  request: NextRequest,
+  { params }: Params
+) {
+  const { id } = params;
 
   if (!id) {
     return NextResponse.json({ error: "ID is required" }, { status: 400 });
@@ -52,19 +55,19 @@ export async function DELETE(request: NextRequest) {
   try {
     await api.delete(`/notes/${id}`, {
       headers: {
-        Cookie: cookieStore.toString(),
+        Cookie: request.headers.get("cookie") || "",
       },
     });
 
-    return NextResponse.json(
-      { message: "Note deleted successfully" },
-      { status: 200 }
-    );
+    return NextResponse.json({ message: "Note deleted successfully" }, { status: 200 });
   } catch (error: unknown) {
     if (isAxiosError(error)) {
       logErrorResponse(error);
       const status = error.response?.status || 500;
-      const message = error.response?.data || { error: "Failed to delete note" };
+      const message =
+        typeof error.response?.data === "string"
+          ? { error: error.response.data }
+          : error.response?.data || { error: "Failed to delete note" };
       return NextResponse.json(message, { status });
     }
 
@@ -72,10 +75,11 @@ export async function DELETE(request: NextRequest) {
   }
 }
 
-// PATCH /api/notes/[id]
-export async function PATCH(request: NextRequest) {
-  const cookieStore = cookies();
-  const id = extractIdFromUrl(request);
+export async function PATCH(
+  request: NextRequest,
+  { params }: Params
+) {
+  const { id } = params;
 
   if (!id) {
     return NextResponse.json({ error: "ID is required" }, { status: 400 });
@@ -86,7 +90,7 @@ export async function PATCH(request: NextRequest) {
   try {
     const { data } = await api.patch(`/notes/${id}`, body, {
       headers: {
-        Cookie: cookieStore.toString(),
+        Cookie: request.headers.get("cookie") || "",
         "Content-Type": "application/json",
       },
     });
@@ -96,7 +100,10 @@ export async function PATCH(request: NextRequest) {
     if (isAxiosError(error)) {
       logErrorResponse(error);
       const status = error.response?.status || 500;
-      const message = error.response?.data || { error: "Failed to update note" };
+      const message =
+        typeof error.response?.data === "string"
+          ? { error: error.response.data }
+          : error.response?.data || { error: "Failed to update note" };
       return NextResponse.json(message, { status });
     }
 

@@ -29,7 +29,7 @@ export const metadata: Metadata = {
 };
 
 const Profile = async () => {
-  const { user } = await fetchServerUser();
+  const user = await fetchServerUser();
   return (
     <main className={css.mainContent}>
       <div className={css.profileCard}>

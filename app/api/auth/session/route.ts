@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { api } from "../../api";
+import { api } from "../../api"; // рівно як у репозиторії
 import { parse } from "cookie";
 import { isAxiosError } from "axios";
-import { logErrorResponse } from "../../../utils/logErrorResponse";
+import { logErrorResponse } from "../../../util/logErrorResponse"; // шлях має точно співпадати
 
 export async function GET() {
   const cookieStore = await cookies();
@@ -11,7 +11,10 @@ export async function GET() {
   const refreshToken = cookieStore.get("refreshToken")?.value;
 
   if (accessToken) {
-    return NextResponse.json({ message: "Session refreshed successfully" });
+    return NextResponse.json(
+      { message: "Session refreshed successfully" },
+      { status: 200 }
+    );
   }
 
   if (refreshToken) {
@@ -24,15 +27,20 @@ export async function GET() {
 
       const setCookie = apiRes.headers["set-cookie"];
       if (setCookie) {
-        const cookieArray = Array.isArray(setCookie) ? setCookie : [setCookie];
-
+        const cookieArray = Array.isArray(setCookie)
+          ? setCookie
+          : [setCookie];
         for (const cookieStr of cookieArray) {
           const parsed = parse(cookieStr);
-          const options = {
-            expires: parsed.Expires ? new Date(parsed.Expires) : undefined,
-            path: parsed.Path || "/",
-            maxAge: parsed["Max-Age"] ? Number(parsed["Max-Age"]) : undefined,
-          };
+          const options: {
+            expires?: Date;
+            maxAge?: number;
+            path?: string;
+          } = {};
+
+          if (parsed.Expires) options.expires = new Date(parsed.Expires);
+          if (parsed["Max-Age"]) options.maxAge = Number(parsed["Max-Age"]);
+          if (parsed.Path) options.path = parsed.Path;
 
           if (parsed.accessToken) {
             cookieStore.set("accessToken", parsed.accessToken, options);
@@ -42,13 +50,24 @@ export async function GET() {
           }
         }
 
-        return NextResponse.json({ message: "Session refreshed successfully" }, { status: apiRes.status });
+        return NextResponse.json(
+          { message: "Session refreshed successfully" },
+          { status: apiRes.status }
+        );
       }
+
+      // Якщо немає set-cookie — вважати, що помилка
+      return NextResponse.json(
+        { error: "Unable to refresh session" },
+        { status: 500 }
+      );
     } catch (error: unknown) {
       if (isAxiosError(error)) {
         logErrorResponse(error);
-        const status = error.response?.status || 500;
-        const message = error.response?.data || { error: "Internal Server Error" };
+        const status = error.response?.status ?? 500;
+        const message = error.response?.data ?? {
+          error: "Internal Server Error",
+        };
         return NextResponse.json(message, { status });
       }
 
@@ -56,5 +75,8 @@ export async function GET() {
     }
   }
 
-  return NextResponse.json({ message: "Invalid or expired token" }, { status: 401 });
+  return NextResponse.json(
+    { message: "Invalid or expired token" },
+    { status: 401 }
+  );
 }

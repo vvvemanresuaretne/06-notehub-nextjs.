@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { api } from "../../api";
 import { cookies } from "next/headers";
 import { parse } from "cookie";
-import { AxiosError } from "axios";
+import { isAxiosError } from "axios";
+import { logErrorResponse } from "../../../util/logErrorResponse";
 
 export async function POST(req: NextRequest) {
   try {
@@ -16,12 +17,22 @@ export async function POST(req: NextRequest) {
       const cookieArray = Array.isArray(setCookie) ? setCookie : [setCookie];
       for (const cookieStr of cookieArray) {
         const parsed = parse(cookieStr);
+        const options: {
+          expires?: Date;
+          maxAge?: number;
+          domain?: string;
+          path?: string;
+          secure?: boolean;
+          httpOnly?: boolean;
+          sameSite?: boolean | 'lax' | 'strict' | 'none';
+          priority?: 'low'|'medium'|'high';
+          encode?: (val: string) => string;
+          partitioned?: boolean;
+        } = {};
 
-        const options = {
-          expires: parsed.Expires ? new Date(parsed.Expires) : undefined,
-          path: parsed.Path || "/",
-          maxAge: parsed["Max-Age"] ? Number(parsed["Max-Age"]) : undefined,
-        };
+        if (parsed.Expires) options.expires = new Date(parsed.Expires);
+        if (parsed["Max-Age"]) options.maxAge = Number(parsed["Max-Age"]);
+        if (parsed.Path) options.path = parsed.Path;
 
         if (parsed.accessToken) {
           cookieStore.set("accessToken", parsed.accessToken, options);
@@ -30,6 +41,8 @@ export async function POST(req: NextRequest) {
           cookieStore.set("refreshToken", parsed.refreshToken, options);
         }
       }
+
+      return NextResponse.json(apiRes.data, { status: apiRes.status });
     }
 
     return NextResponse.json(apiRes.data, { status: apiRes.status });
@@ -37,9 +50,10 @@ export async function POST(req: NextRequest) {
     let status = 500;
     let message = { error: "Internal Server Error" };
 
-    if (error instanceof AxiosError) {
-      status = error.response?.status || 500;
-      message = error.response?.data || message;
+    if (isAxiosError(error)) {
+      logErrorResponse(error);
+      status = error.response?.status ?? 500;
+      message = error.response?.data ?? message;
     }
 
     return NextResponse.json(message, { status });

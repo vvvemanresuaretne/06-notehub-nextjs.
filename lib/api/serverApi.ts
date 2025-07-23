@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import { nextServer } from "./api";
 import { FetchNotesProps, Note } from "@/types/note";
 import { CheckSessionResp } from "@/types/session";
-import { UserRes } from "@/types/user";
+import { User } from "@/types/user";
 
 export async function fetchNotesServer(
   search: string,
@@ -47,9 +47,9 @@ export async function checkServerSession() {
   return res;
 }
 
-export async function fetchServerUser(): Promise<UserRes> {
+export async function fetchServerUser(): Promise<User> {
   const cookieStore = await cookies();
-  const res = await nextServer.get<UserRes>("/users/me", {
+  const res = await nextServer.get<User>("/users/me", {
     headers: {
       Cookie: cookieStore.toString(),
     },

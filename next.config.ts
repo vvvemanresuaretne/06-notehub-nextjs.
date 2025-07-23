@@ -1,8 +1,7 @@
-// next.config.js или next.config.ts
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  // остальная настройка (e.g. images)
+  // Інші налаштування (наприклад, headers)
   async headers() {
     return [
       {
@@ -27,6 +26,16 @@ const nextConfig: NextConfig = {
         ],
       },
     ];
+  },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'ac.goit.global',
+        port: '',
+        pathname: '/**',
+      },
+    ],
   },
 };
 
