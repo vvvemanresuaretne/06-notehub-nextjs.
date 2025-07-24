@@ -1,77 +1,51 @@
-import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
-import { api } from "../../api"; 
-import { parse } from "cookie";
-import { isAxiosError } from "axios";
-import { logErrorResponse } from "../../../util/logErrorResponse"; 
+import { NextRequest, NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
+import { api } from '../../api';
+import { parse } from 'cookie';
+import { isAxiosError } from 'axios';
+import { logErrorResponse } from '../../_utils/utils';
 
-export async function GET() {
-  const cookieStore = await cookies();
-  const accessToken = cookieStore.get("accessToken")?.value;
-  const refreshToken = cookieStore.get("refreshToken")?.value;
+export async function GET(request: NextRequest) {
+  try {
+    const cookieStore = await cookies();
+    const refreshToken = cookieStore.get('refreshToken')?.value;
+    const next = request.nextUrl.searchParams.get('next') || '/';
 
-  if (accessToken) {
-    return NextResponse.json(
-      { message: "Session refreshed successfully" },
-      { status: 200 }
-    );
-  }
-
-  if (refreshToken) {
-    try {
-      const apiRes = await api.get("auth/session", {
-        headers: { Cookie: cookieStore.toString() },
+    if (refreshToken) {
+      const apiRes = await api.get('auth/session', {
+        headers: {
+          Cookie: cookieStore.toString(),
+        },
       });
-
-      const setCookie = apiRes.headers["set-cookie"];
+      const setCookie = apiRes.headers['set-cookie'];
       if (setCookie) {
         const cookieArray = Array.isArray(setCookie) ? setCookie : [setCookie];
+        let accessToken = '';
+        let refreshToken = '';
+
         for (const cookieStr of cookieArray) {
           const parsed = parse(cookieStr);
-          const options: {
-            expires?: Date;
-            maxAge?: number;
-            path?: string;
-          } = {};
-
-          if (parsed.Expires) options.expires = new Date(parsed.Expires);
-          if (parsed["Max-Age"]) options.maxAge = Number(parsed["Max-Age"]);
-          if (parsed.Path) options.path = parsed.Path;
-
-          if (parsed.accessToken) {
-            cookieStore.set("accessToken", parsed.accessToken, options);
-          }
-          if (parsed.refreshToken) {
-            cookieStore.set("refreshToken", parsed.refreshToken, options);
-          }
+          if (parsed.accessToken) accessToken = parsed.accessToken;
+          if (parsed.refreshToken) refreshToken = parsed.refreshToken;
         }
 
-        return NextResponse.json(
-          { message: "Session refreshed successfully" },
-          { status: apiRes.status }
-        );
-      }
+        if (accessToken) cookieStore.set('accessToken', accessToken);
+        if (refreshToken) cookieStore.set('refreshToken', refreshToken);
 
-      return NextResponse.json(
-        { error: "Unable to refresh session" },
-        { status: 500 }
-      );
-    } catch (error: unknown) {
-      if (isAxiosError(error)) {
-        logErrorResponse(error);
-        const status = error.response?.status ?? 500;
-        const message = error.response?.data ?? {
-          error: "Internal Server Error",
-        };
-        return NextResponse.json(message, { status });
+        return NextResponse.redirect(new URL(next, request.url), {
+          headers: {
+            'set-cookie': cookieStore.toString(),
+          },
+        });
       }
-
-      return NextResponse.json({ error: "Unknown error" }, { status: 500 });
     }
+    return NextResponse.redirect(new URL('/sign-in', request.url));
+  } catch (error) {
+    if (isAxiosError(error)) {
+      logErrorResponse(error.response?.data);
+      return NextResponse.redirect(new URL('/sign-in', request.url));
+    }
+    logErrorResponse({ message: (error as Error).message });
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
-
-  return NextResponse.json(
-    { message: "Invalid or expired token" },
-    { status: 401 }
-  );
 }
